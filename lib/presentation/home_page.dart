@@ -51,11 +51,18 @@ class HomePage extends StatelessWidget {
                               : null,
                         ),
                       ),
-                      subtitle:
-                          task.description != null &&
-                              task.description!.isNotEmpty
-                          ? Text(task.description!)
-                          : null,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (task.description != null &&
+                              task.description!.isNotEmpty)
+                            Text(task.description!),
+                          if (task.dueDate != null)
+                            Text(
+                              'Due: ${task.dueDate!.toLocal().toString().split(' ')[0]}',
+                            ),
+                        ],
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

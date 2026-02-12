@@ -43,12 +43,14 @@ class TaskProvider extends ChangeNotifier {
   Task createTask({
     required String title,
     String? description,
+    DateTime? dueDate,
     required TaskPriority priority,
   }) {
     return Task(
       id: const Uuid().v4(),
       title: title,
       description: description,
+      dueDate: dueDate,
       priority: priority,
     );
   }

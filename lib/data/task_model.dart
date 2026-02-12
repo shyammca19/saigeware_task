@@ -14,11 +14,14 @@ class TaskModel {
   @HiveField(2)
   final String? description;
 
-  @HiveField(3) 
+  @HiveField(3)
   final int priority;
 
   @HiveField(4)
   final bool isCompleted;
+
+  @HiveField(5)
+  final DateTime? dueDate;
 
   TaskModel({
     required this.id,
@@ -26,6 +29,7 @@ class TaskModel {
     this.description,
     required this.priority,
     required this.isCompleted,
+    this.dueDate,
   });
 
   // Convert Model → Domain
@@ -36,6 +40,7 @@ class TaskModel {
       description: description,
       priority: TaskPriority.values[priority],
       isCompleted: isCompleted,
+      dueDate: dueDate,
     );
   }
 
@@ -47,6 +52,7 @@ class TaskModel {
       description: task.description,
       priority: task.priority.index,
       isCompleted: task.isCompleted,
+      dueDate: task.dueDate,
     );
   }
 }

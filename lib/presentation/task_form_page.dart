@@ -18,6 +18,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   TaskPriority _priority = TaskPriority.medium;
+  DateTime? _dueDate;
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
       _titleController.text = widget.task!.title;
       _descController.text = widget.task!.description ?? '';
       _priority = widget.task!.priority;
+      _dueDate = widget.task!.dueDate;
     }
   }
 
@@ -50,10 +52,12 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Required' : null,
               ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: _descController,
                 decoration: InputDecoration(labelText: 'Task Description'),
               ),
+              SizedBox(height: 20),
               DropdownButtonFormField(
                 initialValue: _priority,
                 items: TaskPriority.values
@@ -61,7 +65,36 @@ class _TaskFormPageState extends State<TaskFormPage> {
                     .toList(),
                 onChanged: (value) => _priority = value!,
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _dueDate == null
+                          ? 'No due date selected'
+                          : 'Due: ${_dueDate!.toLocal().toString().split(' ')[0]}',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _dueDate ?? DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) {
+                        //print(picked);
+                        setState(() {
+                          _dueDate = picked;
+                        });
+                      }
+                    },
+                    child: const Text('Pick Date'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -70,11 +103,13 @@ class _TaskFormPageState extends State<TaskFormPage> {
                             title: _titleController.text,
                             description: _descController.text,
                             priority: _priority,
+                            dueDate: _dueDate,
                           )
                         : widget.task!.copyWith(
                             title: _titleController.text,
                             description: _descController.text,
                             priority: _priority,
+                            dueDate: _dueDate,
                           );
                     widget.task == null
                         ? provider.addTask(task)
