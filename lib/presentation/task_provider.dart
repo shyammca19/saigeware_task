@@ -35,6 +35,11 @@ class TaskProvider extends ChangeNotifier {
     updateTask(task.copyWith(isCompleted: !task.isCompleted));
   }
 
+  void deleteTask(String id) {
+    box.delete(id);
+    loadTasks();
+  }
+
   Task createTask({
     required String title,
     String? description,

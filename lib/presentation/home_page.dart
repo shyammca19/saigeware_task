@@ -6,7 +6,6 @@ import 'package:saigeware_task/presentation/task_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-  final bool _isCompleted = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,40 +23,58 @@ class HomePage extends StatelessWidget {
               itemCount: provider.tasks.length,
               itemBuilder: (context, index) {
                 final task = provider.tasks[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 5,
-                    horizontal: 8,
+                return Dismissible(
+                  key: Key(task.id),
+                  onDismissed: (_) => provider.deleteTask(task.id),
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 20),
+                    child: Icon(Icons.delete, color: Colors.white),
                   ),
-                  child: ListTile(
-                    tileColor: Colors.blueGrey[100],
-                    leading: Checkbox(
-                      value: task.isCompleted,
-                      onChanged: (_) => provider.markTask(task),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 8,
                     ),
-                    title: Text(
-                      task.title,
-                      style: TextStyle(
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
+                    child: ListTile(
+                      tileColor: Colors.blueGrey[100],
+                      leading: Checkbox(
+                        value: task.isCompleted,
+                        onChanged: (_) => provider.markTask(task),
                       ),
-                    ),
-                    subtitle:
-                        task.description != null && task.description!.isNotEmpty
-                        ? Text(task.description!)
-                        : null,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                        Container(
-                          height: 10,
-                          width: 10,
-                          color: _priorityColor(task.priority),
+                      title: Text(
+                        task.title,
+                        style: TextStyle(
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
                         ),
-                      ],
+                      ),
+                      subtitle:
+                          task.description != null &&
+                              task.description!.isNotEmpty
+                          ? Text(task.description!)
+                          : null,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            color: Colors.blueGrey,
+                            icon: Icon(Icons.edit),
+                          ),
+                          SizedBox(width: 10),
+                          Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: _priorityColor(task.priority),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
