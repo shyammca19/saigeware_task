@@ -60,7 +60,12 @@ class HomePage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => TaskFormPage(task: task),
+                              ),
+                            ),
                             color: Colors.blueGrey,
                             icon: Icon(Icons.edit),
                           ),

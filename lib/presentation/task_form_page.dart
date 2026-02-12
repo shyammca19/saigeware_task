@@ -4,7 +4,8 @@ import 'package:saigeware_task/domain/task.dart';
 import 'package:saigeware_task/presentation/task_provider.dart';
 
 class TaskFormPage extends StatefulWidget {
-  const TaskFormPage({super.key});
+  final Task? task;
+  const TaskFormPage({super.key, this.task});
 
   @override
   State<TaskFormPage> createState() {
@@ -19,11 +20,21 @@ class _TaskFormPageState extends State<TaskFormPage> {
   TaskPriority _priority = TaskPriority.medium;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.task != null) {
+      _titleController.text = widget.task!.title;
+      _descController.text = widget.task!.description ?? '';
+      _priority = widget.task!.priority;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.read<TaskProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Task"),
+        title: Text(widget.task == null ? "Create Task" : "Edit Task"),
         backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
       ),
@@ -44,7 +55,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 decoration: InputDecoration(labelText: 'Task Description'),
               ),
               DropdownButtonFormField(
-                initialValue: TaskPriority.medium,
+                initialValue: _priority,
                 items: TaskPriority.values
                     .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
                     .toList(),
@@ -54,12 +65,20 @@ class _TaskFormPageState extends State<TaskFormPage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    final task = provider.createTask(
-                      title: _titleController.text,
-                      description: _descController.text,
-                      priority: _priority,
-                    );
-                    provider.addTask(task);
+                    final task = widget.task == null
+                        ? provider.createTask(
+                            title: _titleController.text,
+                            description: _descController.text,
+                            priority: _priority,
+                          )
+                        : widget.task!.copyWith(
+                            title: _titleController.text,
+                            description: _descController.text,
+                            priority: _priority,
+                          );
+                    widget.task == null
+                        ? provider.addTask(task)
+                        : provider.updateTask(task);
                     Navigator.pop(context);
                   }
                 },
@@ -70,7 +89,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
                 child: Text(
-                  "Create",
+                  "SAVE",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
               ),
