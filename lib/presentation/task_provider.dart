@@ -34,7 +34,6 @@ class TaskProvider extends ChangeNotifier {
       case TaskFilter.pending:
         return _tasks.where((t) => !t.isCompleted).toList();
       case TaskFilter.all:
-      default:
         return _tasks;
     }
   }
