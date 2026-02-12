@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saigeware_task/domain/task.dart';
 import 'package:saigeware_task/presentation/task_form_page.dart';
-
-enum TaskPriority { low, medium, high }
+import 'package:saigeware_task/presentation/task_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -9,41 +10,59 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<TaskProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tasks'),
         backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            tileColor: Colors.blueGrey[100],
-            leading: _isCompleted
-                ? Icon(Icons.check_box_outlined)
-                : Icon(Icons.check_box_outline_blank_outlined),
-            title: Text(
-              "new task",
-              style: TextStyle(
-                decoration: _isCompleted ? TextDecoration.lineThrough : null,
-              ),
+      body: provider.tasks.isEmpty
+          ? const Center(child: Text("No Tasks"))
+          : ListView.builder(
+              itemCount: provider.tasks.length,
+              itemBuilder: (context, index) {
+                final task = provider.tasks[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 8,
+                  ),
+                  child: ListTile(
+                    tileColor: Colors.blueGrey[100],
+                    leading: Checkbox(
+                      value: task.isCompleted,
+                      onChanged: (_) => provider.markTask(task),
+                    ),
+                    title: Text(
+                      task.title,
+                      style: TextStyle(
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
+                    ),
+                    subtitle:
+                        task.description != null && task.description!.isNotEmpty
+                        ? Text(task.description!)
+                        : null,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                        Container(
+                          height: 10,
+                          width: 10,
+                          color: _priorityColor(task.priority),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-            subtitle: Text("description here"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                Container(
-                  height: 10,
-                  width: 10,
-                  color: _priorityColor(TaskPriority.low),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
           context,

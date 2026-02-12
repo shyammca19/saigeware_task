@@ -7,11 +7,32 @@ import 'package:uuid/uuid.dart';
 class TaskProvider extends ChangeNotifier {
   final Box<TaskModel> box;
 
-  TaskProvider(this.box) {}
+  TaskProvider(this.box) {
+    loadTasks();
+  }
+
+  List<Task> _tasks = [];
+  List<Task> get tasks => _tasks;
+
+  void loadTasks() {
+    _tasks = box.values.map((task) => task.toEntity()).toList();
+    //print(_tasks);
+    notifyListeners();
+  }
 
   void addTask(Task task) {
     box.put(task.id, TaskModel.fromEntity(task));
     //print(box.get(task.id));
+    loadTasks();
+  }
+
+  void updateTask(Task task) {
+    box.put(task.id, TaskModel.fromEntity(task));
+    loadTasks();
+  }
+
+  void markTask(Task task) {
+    updateTask(task.copyWith(isCompleted: !task.isCompleted));
   }
 
   Task createTask({

@@ -60,6 +60,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       priority: _priority,
                     );
                     provider.addTask(task);
+                    Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
