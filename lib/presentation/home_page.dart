@@ -16,13 +16,28 @@ class HomePage extends StatelessWidget {
         title: const Text('Tasks'),
         backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
+        actions: [
+          PopupMenuButton<TaskFilter>(
+            onSelected: (value) {
+              provider.setFilter(value);
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: TaskFilter.all, child: Text("All")),
+              PopupMenuItem(
+                value: TaskFilter.completed,
+                child: Text("Completed"),
+              ),
+              PopupMenuItem(value: TaskFilter.pending, child: Text("Pending")),
+            ],
+          ),
+        ],
       ),
-      body: provider.tasks.isEmpty
+      body: provider.filteredTasks.isEmpty
           ? const Center(child: Text("No Tasks"))
           : ListView.builder(
-              itemCount: provider.tasks.length,
+              itemCount: provider.filteredTasks.length,
               itemBuilder: (context, index) {
-                final task = provider.tasks[index];
+                final task = provider.filteredTasks[index];
                 return Dismissible(
                   key: Key(task.id),
                   onDismissed: (_) => provider.deleteTask(task.id),
@@ -49,6 +64,8 @@ class HomePage extends StatelessWidget {
                           decoration: task.isCompleted
                               ? TextDecoration.lineThrough
                               : null,
+                          decorationColor: Colors.red,
+                          decorationThickness: 2,
                         ),
                       ),
                       subtitle: Column(

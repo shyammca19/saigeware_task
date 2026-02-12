@@ -1,4 +1,5 @@
 enum TaskPriority { low, medium, high }
+enum TaskFilter { all, completed, pending }
 
 class Task {
   final String id;

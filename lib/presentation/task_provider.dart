@@ -12,12 +12,31 @@ class TaskProvider extends ChangeNotifier {
   }
 
   List<Task> _tasks = [];
-  List<Task> get tasks => _tasks;
+  //List<Task> get tasks => _tasks;
+  TaskFilter _filter = TaskFilter.all;
+  TaskFilter get filter => _filter;
 
   void loadTasks() {
     _tasks = box.values.map((task) => task.toEntity()).toList();
     //print(_tasks);
     notifyListeners();
+  }
+
+  void setFilter(TaskFilter filter) {
+    _filter = filter;
+    loadTasks();
+  }
+
+  List<Task> get filteredTasks {
+    switch (_filter) {
+      case TaskFilter.completed:
+        return _tasks.where((t) => t.isCompleted).toList();
+      case TaskFilter.pending:
+        return _tasks.where((t) => !t.isCompleted).toList();
+      case TaskFilter.all:
+      default:
+        return _tasks;
+    }
   }
 
   void addTask(Task task) {
