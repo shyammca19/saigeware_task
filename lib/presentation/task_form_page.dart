@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-enum TaskPriority { low, medium, high }
+import 'package:provider/provider.dart';
+import 'package:saigeware_task/domain/task.dart';
+import 'package:saigeware_task/presentation/task_provider.dart';
 
 class TaskFormPage extends StatefulWidget {
   const TaskFormPage({super.key});
@@ -19,6 +20,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<TaskProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Task"),
@@ -50,7 +52,16 @@ class _TaskFormPageState extends State<TaskFormPage> {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    final task = provider.createTask(
+                      title: _titleController.text,
+                      description: _descController.text,
+                      priority: _priority,
+                    );
+                    provider.addTask(task);
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueGrey,
                   foregroundColor: Colors.white,
