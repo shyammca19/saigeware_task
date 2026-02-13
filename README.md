@@ -21,9 +21,9 @@ The app allows users to manage tasks with full offline persistence using Hive an
 
 The project follows a simplified Clean Architecture approach.
 
-lib/
- ┣ data/          → Hive model, adapter, local storage
- ┣ domain/        → Task entity (pure Dart model)
+lib/<br>
+ ┣ data/          → Hive model, adapter, local storage<br>
+ ┣ domain/        → Task entity (pure Dart model)<br>
  ┣ presentation/  → UI screens and TaskProvider
 
 ### Why this structure?
@@ -73,8 +73,8 @@ This keeps logic outside widgets and ensures reactive updates.
 
 ## 🚀 How to Run
 
-flutter pub get
-dart run build_runner build
+flutter pub get<br>
+dart run build_runner build<br>
 flutter run
 
 ## 📦 Packages Used
@@ -87,7 +87,12 @@ flutter run
 
 ## 📸 Screenshots
 
-(Add screenshots here if needed)
+<p align="center">
+  <img src="screenshots/home.jpg" width="250"/>
+  <img src="screenshots/create.jpg" width="250"/>
+  <img src="screenshots/completed.jpg" width="250"/>
+  <img src="screenshots/edit.jpg" width="250"/>
+</p>
 
 ## 👨‍💻 Author
 
